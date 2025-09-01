@@ -12,12 +12,12 @@ INFO_PATH = '/workspaces/HEVC_CPH_Data_Visualization/info'
 
 # Details of the frame to inspect
 VIDEO_FILENAME = 'IntraTrain_768x512'
-FRAME_TO_VISUALIZE = 7
+FRAME_TO_VISUALIZE = 3
 QP_TO_INSPECT = 22
 
 # The specific pixel coordinate you want to inspect
-X_COORDINATE = 128
-Y_COORDINATE = 192
+X_COORDINATE = 112
+Y_COORDINATE = 160
 
 # --- 2. Helper Functions (from previous scripts) ---
 

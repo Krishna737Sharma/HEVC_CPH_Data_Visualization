@@ -19,12 +19,12 @@ MODEL_CHECKPOINT_PATH = '/workspaces/HEVC_CPH_Data_Visualization/Models/model_20
 
 # Details of the frame to predict
 VIDEO_FILENAME = 'IntraTrain_768x512'
-FRAME_TO_VISUALIZE = 7
+FRAME_TO_VISUALIZE = 3
 # The QP must match the model you are loading
 QP_TO_INSPECT = 22
 
 # --- 2. Helper Functions ---
-
+# (Helper functions remain the same as before)
 def read_YUV420_frame(fid, width, height, frame_index):
     frame_bytes = (width * height * 3) // 2
     fid.seek(frame_index * frame_bytes)
@@ -81,6 +81,7 @@ def decode_cnn_prediction_to_depth_map(pred_64, pred_32, pred_16):
             depth_map[i] = 3
     return depth_map
 
+
 # --- 3. Main Prediction and Visualization Logic ---
 
 def main():
@@ -89,14 +90,12 @@ def main():
         width, height = di.YUV_WIDTH_LIST_FULL[video_index], di.YUV_HEIGHT_LIST_FULL[video_index]
         yuv_file = os.path.join(YUV_PATH, VIDEO_FILENAME + '.yuv')
         
-        # --- THIS IS THE FIX ---
-        # Use glob to find the info file with wildcards, as the name can vary
         info_file_pattern = os.path.join(INFO_PATH, f'Info*_{VIDEO_FILENAME}_*qp{QP_TO_INSPECT}*CUDepth.dat')
         info_files = glob.glob(info_file_pattern)
         if not info_files:
             print(f"Error: Could not find Info file matching pattern: {info_file_pattern}")
             return
-        info_file = info_files[0] # Use the first match found
+        info_file = info_files[0] 
 
         with open(yuv_file, 'rb') as f_yuv:
             frame_pixels = read_YUV420_frame(f_yuv, width, height, FRAME_TO_VISUALIZE)
@@ -112,7 +111,18 @@ def main():
     tf.compat.v1.reset_default_graph()
     x = tf.compat.v1.placeholder("float", [None, 64, 64, 1])
     qp = tf.compat.v1.placeholder("float", [None, 1])
-    _, _, _, y_conv_64, y_conv_32, y_conv_16, _, _, _, _, _, _ = nt.net(x, tf.compat.v1.placeholder("float", [None, 16]), qp, 0.0, 0.0, 0.01, 0.9, 1, 1)
+    # The net_CTU64 version of net() requires more placeholders
+    if 'net_CTU64' in nt.__name__:
+        y_ = tf.compat.v1.placeholder("float", [None, 16])
+        isdrop = tf.compat.v1.placeholder("float")
+        global_step = tf.compat.v1.placeholder("float")
+        _, _, _, y_conv_64, y_conv_32, y_conv_16, _, _, _, _, _, _ = nt.net(x, y_, qp, isdrop, global_step, 0.01, 0.9, 1, 1)
+    # The net_CNN version of net() requires fewer placeholders
+    else: 
+        y_ = tf.compat.v1.placeholder("float", [None, 16])
+        isdrop = tf.compat.v1.placeholder("float")
+        y_flat_64, y_flat_32, y_flat_16, y_conv_64, y_conv_32, y_conv_16, opt_vars_all = nt.net(x, y_, qp, isdrop)
+
     
     model_variables = tf.compat.v1.trainable_variables()
     saver = tf.compat.v1.train.Saver(var_list=model_variables)
@@ -123,6 +133,9 @@ def main():
 
     # --- Prepare for Loop ---
     full_predicted_map = np.zeros_like(ground_truth_map)
+    
+    # --- THIS IS THE FIX ---
+    # Pass the raw QP value. The model will normalize it internally.
     qp_tensor = np.array([float(QP_TO_INSPECT)]).reshape(1, 1)
     
     print(f"\nProcessing frame {FRAME_TO_VISUALIZE} block by block...")
@@ -131,11 +144,18 @@ def main():
         for x_ctu in range(width // 64):
             x_start, y_start = x_ctu * 64, y_ctu * 64
             image_patch = frame_pixels[y_start:y_start+64, x_start:x_start+64]
+            
+            # --- THIS IS THE FIX ---
+            # Pass the raw image pixel values. The model normalizes them internally.
             image_tensor = image_patch.astype(np.float32).reshape(1, 64, 64, 1)
             
+            feed_dict = {x: image_tensor, qp: qp_tensor}
+            if 'net_CTU64' in nt.__name__:
+                 feed_dict.update({isdrop: 0.0, global_step: 0.0})
+
             pred_64, pred_32, pred_16 = sess.run(
                 [y_conv_64, y_conv_32, y_conv_16],
-                feed_dict={x: image_tensor, qp: qp_tensor}
+                feed_dict=feed_dict
             )
             
             predicted_label = decode_cnn_prediction_to_depth_map(pred_64, pred_32, pred_16)

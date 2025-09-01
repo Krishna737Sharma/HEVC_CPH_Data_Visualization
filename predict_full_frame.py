@@ -16,7 +16,7 @@ MODEL_CHECKPOINT_PATH = 'best_vit_model.pth' # Path to your trained model checkp
 
 # Details of the frame to predict
 VIDEO_FILENAME = 'IntraTrain_768x512'
-FRAME_TO_VISUALIZE = 7
+FRAME_TO_VISUALIZE = 3
 QP_TO_INSPECT = 22 # The QP must be one of [22, 27, 32, 37]
 
 # --- 2. Helper Functions ---

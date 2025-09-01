@@ -8,10 +8,10 @@ import matplotlib.patches as patches
 FILE_PATH = '/workspaces/HEVC_CPH_Data_Visualization/AI_Valid_143925.dat'
 
 # The index of the sample you want to see (e.g., 0, 50, 100)
-SAMPLE_INDEX = 100
+SAMPLE_INDEX = 51
 
 # The Quantization Parameter (QP) you want to inspect (0-51)
-QP_TO_INSPECT = 37
+QP_TO_INSPECT = 22
 
 # --- Data Structure Constants ---
 IMAGE_SIZE = 64
@@ -21,50 +21,43 @@ NUM_LABEL_BYTES = 16
 
 def draw_cu_partitions(ax, label_data):
     """
-    Draws the CU partition grid on the image based on the 16-byte label.
+    Corrected function to draw CU partitions for one 64x64 block.
     """
-    # If all labels are 0, the whole 64x64 block is one partition. Do nothing.
-    if np.all(label_data == 0):
-        return
-
-    # Helper function to draw a rectangle
-    def draw_rect(x, y, size, color='red'):
-        rect = patches.Rectangle((x, y), size, size, linewidth=1.2, edgecolor=color, facecolor='none')
+    label_grid = label_data.reshape(4, 4)
+    
+    def draw_rect(x, y, size, color='yellow', lw=1.2):
+        # Helper to draw a rectangle with its top-left corner at (x,y)
+        rect = patches.Rectangle((x - 0.5, y - 0.5), size, size, linewidth=lw, edgecolor=color, facecolor='none')
         ax.add_patch(rect)
 
-    # Check for 32x32 splits
-    # A 32x32 block is NOT split if all its 4 corresponding labels are 1.
-    quadrants = {
-        (0, 0): label_data[0:4],   # Top-left
-        (0, 32): label_data[4:8],  # Top-right
-        (32, 0): label_data[8:12], # Bottom-left
-        (32, 32): label_data[12:16] # Bottom-right
-    }
+    # If the whole CTU is one block (all labels are 0)
+    if np.all(label_grid == 0):
+        draw_rect(0, 0, 64)
+        return
 
-    # Draw the main 64x64 border
-    draw_rect(-0.5, -0.5, 64)
-
-    # If any label is > 1, it means the 64x64 is split into 32x32s
-    if np.any(label_data > 1):
-        draw_rect(31.5, -0.5, 32)  # Draw right 32x32 block
-        draw_rect(-0.5, 31.5, 32)  # Draw bottom 32x32 block
-    
-    # Iterate through the sixteen 16x16 CU positions
-    for i in range(16):
-        # Calculate the top-left corner of the 16x16 block
-        row = (i // 4) * 16
-        col = (i % 4) * 16
-        
-        # If the label is 2, it's a 16x16 block. Draw its border if not already part of a 32x32.
-        if label_data[i] >= 2:
-            draw_rect(col - 0.5, row - 0.5, 16)
-
-        # If the label is 3, it's split into 8x8 blocks. Draw the inner cross.
-        if label_data[i] == 3:
-            draw_rect(col - 0.5, row - 0.5, 8)       # Top-left 8x8
-            draw_rect(col + 7.5, row - 0.5, 8)      # Top-right 8x8
-            draw_rect(col - 0.5, row + 7.5, 8)      # Bottom-left 8x8
-            draw_rect(col + 7.5, row + 7.5, 8)      # Bottom-right 8x8
+    # Iterate through the four 32x32 quadrants of the CTU
+    for q_r in range(2): # Quadrant row (0 or 1)
+        for q_c in range(2): # Quadrant column (0 or 1)
+            # Get the 4 labels for this quadrant
+            sub_grid = label_grid[q_r*2:(q_r+1)*2, q_c*2:(q_c+1)*2]
+            
+            # If this quadrant is a single 32x32 block (all labels are 1)
+            if np.all(sub_grid == 1):
+                draw_rect(q_c*32, q_r*32, 32)
+            else: # If the quadrant is split further, check its 16x16 blocks
+                for r in range(2):
+                    for c in range(2):
+                        label = sub_grid[r, c]
+                        x_16 = q_c*32 + c*16
+                        y_16 = q_r*32 + r*16
+                        
+                        if label == 2: # This is a 16x16 block
+                            draw_rect(x_16, y_16, 16)
+                        elif label == 3: # This 16x16 is split into 8x8
+                            draw_rect(x_16, y_16, 8)
+                            draw_rect(x_16 + 8, y_16, 8)
+                            draw_rect(x_16, y_16 + 8, 8)
+                            draw_rect(x_16 + 8, y_16 + 8, 8)
 
 
 def visualize_partitions_on_sample(file_path, sample_index, qp):

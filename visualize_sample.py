@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 FILE_PATH = '/workspaces/HEVC_CPH_Data_Visualization/AI_Valid_143925.dat'
 
 # The index of the sample you want to see (0 for the first, 1 for the second, etc.)
-SAMPLE_INDEX = 50 
+SAMPLE_INDEX = 51 
 
 # The Quantization Parameter (QP) you want to inspect the label for (0-51)
 # The training code often uses 22, 27, 32, or 37.
-QP_TO_INSPECT = 32
+QP_TO_INSPECT = 22
 
 # --- Data Structure Constants (derived from your Python files) ---
 IMAGE_SIZE = 64
