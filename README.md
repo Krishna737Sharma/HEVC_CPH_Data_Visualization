@@ -6,24 +6,24 @@ This project provides a comprehensive suite of Python scripts for analyzing, vis
 
 ## Understanding the Dataset
 
-The core of this project is a large dataset stored in `.dat` binary files. [cite_start]The structure of these files was determined by reverse-engineering the provided data loading scripts (`input_data.py`, `net_CTU64.py`)[cite: 54].
+The core of this project is a large dataset stored in `.dat` binary files.The structure of these files was determined by reverse-engineering the provided data loading scripts (`input_data.py`, `net_CTU64.py`).
 
 ### Sample Structure
 
-[cite_start]The `.dat` file is a binary file where data is concatenated without any separators[cite: 43]. [cite_start]Each sample, representing a 64x64 video block, is stored in a **4992-byte chunk**[cite: 44].
+The `.dat` file is a binary file where data is concatenated without any separators.Each sample, representing a 64x64 video block, is stored in a **4992-byte chunk**.
 
-[cite_start]A single 4992-byte sample is broken down as follows[cite: 45]:
-* [cite_start]**Bytes 0–4095 (4096 bytes):** The 64x64 pixel data for the image block, with each pixel being a single unsigned 8-bit integer (`uint8`)[cite: 46, 47].
-* [cite_start]**Bytes 4096–4159 (64 bytes):** An auxiliary data block that is skipped by the data loading scripts[cite: 48, 49].
-* [cite_start]**Bytes 4160–4991 (832 bytes):** The label data, which contains 52 consecutive 16-byte labels[cite: 50]. [cite_start]Each label corresponds to a specific Quantization Parameter (QP) from 0 to 51[cite: 51].
+A single 4992-byte sample is broken down as follows:
+* **Bytes 0–4095 (4096 bytes):** The 64x64 pixel data for the image block, with each pixel being a single unsigned 8-bit integer (`uint8`).
+* **Bytes 4096–4159 (64 bytes):** An auxiliary data block that is skipped by the data loading scripts.
+* **Bytes 4160–4991 (832 bytes):** The label data, which contains 52 consecutive 16-byte labels.Each label corresponds to a specific Quantization Parameter (QP) from 0 to 51.
 
 ### Label Data (CU Depth)
 
-[cite_start]The 16 numbers in a label array correspond to the sixteen 16x16 sub-regions of the 64x64 image[cite: 105]. [cite_start]The value indicates the final CU split depth[cite: 110]:
-* [cite_start]**`3`**: The 16x16 region is split into **8x8** CUs (high detail)[cite: 111, 112].
-* [cite_start]**`2`**: The region is a final **16x16** CU[cite: 113].
-* [cite_start]**`1`**: The region is part of a larger **32x32** CU (simple area)[cite: 114, 115].
-* [cite_start]**`0`**: The region is part of a single **64x64** CU (very simple area)[cite: 116].
+The 16 numbers in a label array correspond to the sixteen 16x16 sub-regions of the 64x64 image.The value indicates the final CU split depth:
+* **`3`**: The 16x16 region is split into **8x8** CUs (high detail).
+* **`2`**: The region is a final **16x16** CU.
+* **`1`**: The region is part of a larger **32x32** CU (simple area).
+* **`0`**: The region is part of a single **64x64** CU (very simple area).
 
 ---
 ## Scripts and Usage
@@ -42,47 +42,50 @@ This repository contains several Python scripts for analysis and prediction. To 
 ### 1. Ground Truth Visualization
 
 #### Single Sample Partitions
-[cite_start]Visualizing the ground truth for a single 64x64 sample from the dataset[cite: 137].
+Visualizing the ground truth for a single 64x64 sample from the dataset.
 * **Script:** `visualize_partitions_on_sample.py`
-* [cite_start]**Output for Sample #50, QP=22:** [cite: 140, 141, 142]
+* **Output for Sample #50, QP=22:** 
+<img width="389" height="411" alt="partition_sample_51_qp_22" src="https://github.com/user-attachments/assets/957bb3a1-8f95-46f5-9e43-97f4ac7e2285" />
 
-![Ground Truth for Sample 50](https://i.imgur.com/L3oY1h0.png)
 
 #### Full Frame Partitions
-[cite_start]Visualizing the complete ground truth partition map for a full frame[cite: 168].
+Visualizing the complete ground truth partition map for a full frame.
 * **Script:** `visualize_full_frame.py`
-* [cite_start]**Output for `IntraTrain_768x512`, Frame 3, QP=22:** [cite: 202]
-
-![Full Frame Ground Truth Partitions](https://i.imgur.com/Y2E3dJc.png)
+* **Output for `IntraTrain_768x512`, Frame 3, QP=22:**.
+  <img width="887" height="591" alt="frame_3_IntraTrain_768x512_qp_22" src="https://github.com/user-attachments/assets/e18e364d-9a6f-4979-993f-dea54139752d" />
 
 ### 2. Model Prediction vs. Ground Truth
 
 #### Single Sample Comparison
 Running inference on a single 64x64 block and comparing the model's prediction to the ground truth.
 
-[cite_start]**ViT Model Prediction (Sample #51, QP=22):** [cite: 153, 156]
-* [cite_start]**Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]` [cite: 154]
-* [cite_start]**Prediction:** `[2 2 2 2 2 2 2 3 2 2 2 3 2 2 3 3]` [cite: 155]
+**ViT Model Prediction (Sample #51, QP=22):**
+* **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]` 
+* **Prediction:** `[2 2 2 2 2 2 2 3 2 2 2 3 2 2 3 3]` 
 
-![ViT Prediction vs. Ground Truth for Sample 51](https://i.imgur.com/qE4J3qM.png)
+<img width="950" height="465" alt="vit_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/8a5e455f-90ff-489b-9b4c-d4ab9f38bbc3" />
 
-[cite_start]**CNN Model Prediction (Sample #51, QP=22):** [cite: 164, 167]
-* [cite_start]**Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]` [cite: 165]
-* [cite_start]**Prediction:** `[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]` [cite: 166]
 
-![CNN Prediction vs. Ground Truth for Sample 51](https://i.imgur.com/gK9f8vW.png)
+**CNN Model Prediction (Sample #51, QP=22):**
+* **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]`
+* **Prediction:** `[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]`
+
+<img width="950" height="465" alt="cnn_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/67ad6783-5153-4915-8324-f98cda10f513" />
+
 
 #### Full Frame Comparison
 Running inference on a full frame and comparing the complete predicted partition map to the ground truth.
 
-[cite_start]**ViT Model Full Frame Prediction:** [cite: 203, 235]
-![ViT Full Frame Prediction vs. Ground Truth](https://i.imgur.com/P4w5a9N.png)
+**ViT Model Full Frame Prediction:**
+<img width="2304" height="1536" alt="full_frame_comparison_qp22" src="https://github.com/user-attachments/assets/f983945d-e4a6-43af-9032-9dba059dc470" />
 
-[cite_start]**CNN Model Full Frame Prediction:** [cite: 236, 269]
-![CNN Full Frame Prediction vs. Ground Truth](https://i.imgur.com/N6d7h4f.png)
+
+**CNN Model Full Frame Prediction:**
+
+<img width="2304" height="1536" alt="cnn_full_frame_comparison_qp22" src="https://github.com/user-attachments/assets/5abafb4d-779e-42fe-9a16-ee84fe351e6c" />
 
 ---
 ## Repository
 
 For the complete code and data, please visit the GitHub repository:
-[cite_start][https://github.com/Krishna737Sharma/HEVC_CPH_Data_Visualization](https://github.com/Krishna737Sharma/HEVC_CPH_Data_Visualization) [cite: 136]
+[https://github.com/Krishna737Sharma/HEVC_CPH_Data_Visualization](https://github.com/Krishna737Sharma/HEVC_CPH_Data_Visualization)
