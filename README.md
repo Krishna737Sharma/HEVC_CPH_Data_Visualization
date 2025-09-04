@@ -45,7 +45,7 @@ This repository contains several Python scripts for analysis and prediction. To 
 Visualizing the ground truth for a single 64x64 sample from the dataset.
 * **Script:** `visualize_partitions_on_sample.py`
 * **Output for Sample #50, QP=22:** 
-<img width="389" height="411" alt="partition_sample_51_qp_22" src="https://github.com/user-attachments/assets/957bb3a1-8f95-46f5-9e43-97f4ac7e2285" />
+<img width="389" height="411" alt="partition_sample_50_qp_22(1)" src="https://github.com/user-attachments/assets/22224165-a17f-480a-8358-38327a96a590" />
 
 
 #### Full Frame Partitions
@@ -59,15 +59,15 @@ Visualizing the complete ground truth partition map for a full frame.
 #### Single Sample Comparison
 Running inference on a single 64x64 block and comparing the model's prediction to the ground truth.
 
-**ViT Model Prediction (Sample #51, QP=22):**
-* **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]` 
-* **Prediction:** `[2 2 2 2 2 2 2 3 2 2 2 3 2 2 3 3]` 
-<img width="950" height="465" alt="vit_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/8a5e455f-90ff-489b-9b4c-d4ab9f38bbc3" />
+**ViT Model Prediction (Sample #50, QP=22):**
+* **Ground Truth:** `[3 2 1 1 2 2 1 1 3 2 3 2 3 3 3 3]` 
+* **Prediction:** `[3 2 3 2 3 2 2 2 3 2 3 3 2 2 2 3]` 
+<img width="950" height="465" alt="vit_pred_sample_50_qp_22(1)" src="https://github.com/user-attachments/assets/9ec42f9d-1b90-434a-aeca-ac89ace29308" />
 
-**CNN Model Prediction (Sample #51, QP=22):**
-* **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]`
-* **Prediction:** `[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]`
-<img width="950" height="465" alt="cnn_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/67ad6783-5153-4915-8324-f98cda10f513" />
+**CNN Model Prediction (Sample #50, QP=22):**
+* **Ground Truth:** `[3 2 1 1 2 2 1 1 3 2 3 2 3 3 3 3]`
+* **Prediction:** `[1 1 2 2 1 1 2 3 3 1 3 3 3 1 2 3]`
+<img width="950" height="465" alt="cnn_pred_sample_50_qp_22(1)" src="https://github.com/user-attachments/assets/3a0e0682-fae4-4e8d-9b98-daef25f447d6" />
 
 #### Full Frame Comparison
 Running inference on a full frame and comparing the complete predicted partition map to the ground truth.
