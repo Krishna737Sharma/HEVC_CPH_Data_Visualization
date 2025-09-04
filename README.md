@@ -62,16 +62,12 @@ Running inference on a single 64x64 block and comparing the model's prediction t
 **ViT Model Prediction (Sample #51, QP=22):**
 * **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]` 
 * **Prediction:** `[2 2 2 2 2 2 2 3 2 2 2 3 2 2 3 3]` 
-
 <img width="950" height="465" alt="vit_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/8a5e455f-90ff-489b-9b4c-d4ab9f38bbc3" />
-
 
 **CNN Model Prediction (Sample #51, QP=22):**
 * **Ground Truth:** `[1 1 2 2 1 1 3 3 3 2 3 3 3 3 3 3]`
 * **Prediction:** `[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]`
-
 <img width="950" height="465" alt="cnn_pred_sample_51_qp_22" src="https://github.com/user-attachments/assets/67ad6783-5153-4915-8324-f98cda10f513" />
-
 
 #### Full Frame Comparison
 Running inference on a full frame and comparing the complete predicted partition map to the ground truth.
@@ -79,9 +75,7 @@ Running inference on a full frame and comparing the complete predicted partition
 **ViT Model Full Frame Prediction:**
 <img width="2304" height="1536" alt="full_frame_comparison_qp22" src="https://github.com/user-attachments/assets/f983945d-e4a6-43af-9032-9dba059dc470" />
 
-
 **CNN Model Full Frame Prediction:**
-
 <img width="2304" height="1536" alt="cnn_full_frame_comparison_qp22" src="https://github.com/user-attachments/assets/5abafb4d-779e-42fe-9a16-ee84fe351e6c" />
 
 ---
