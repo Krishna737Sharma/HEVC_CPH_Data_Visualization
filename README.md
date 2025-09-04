@@ -81,12 +81,17 @@ Running inference on a full frame and comparing the complete predicted partition
 **Str.bin files outputs:**
 
 HEVC_predictions:
+
 <img width="835" height="556" alt="no_modelframe7" src="https://github.com/user-attachments/assets/0db719a9-b632-4289-aca9-f88879e4898c" />
 
+
 CNN_predictions:
+
 <img width="821" height="572" alt="CNN_frame7" src="https://github.com/user-attachments/assets/3ec4d8f5-aaea-4ffa-9039-d26e9caa447d" />
 
+
 ViT_predictions:
+
 <img width="844" height="559" alt="VIT_frame7" src="https://github.com/user-attachments/assets/80591f5d-d67a-4b12-9ab8-645ad1a87642" />
 
 ---
