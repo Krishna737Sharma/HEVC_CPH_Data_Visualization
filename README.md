@@ -79,9 +79,12 @@ Running inference on a full frame and comparing the complete predicted partition
 <img width="2304" height="1536" alt="cnn_full_frame_comparison_qp22" src="https://github.com/user-attachments/assets/5abafb4d-779e-42fe-9a16-ee84fe351e6c" />
 
 **Str.bin files outputs:**
-<img width="835" height="565" alt="NO_model" src="https://github.com/user-attachments/assets/aa6239a5-fbb2-4d52-8305-d02955cff4a9" />  <img width="819" height="574" alt="CNN_frame5" src="https://github.com/user-attachments/assets/76c808fa-84f8-4fe4-9cad-c2402bcac93d" />  <img width="853" height="568" alt="VIT_frame5" src="https://github.com/user-attachments/assets/8d76fb24-4b96-471f-8ce9-731b6cc33801" />
-
-
+HEVC_predictions:
+<img width="835" height="565" alt="NO_model" src="https://github.com/user-attachments/assets/aa6239a5-fbb2-4d52-8305-d02955cff4a9" /> 
+CNN_predictions:
+<img width="819" height="574" alt="CNN_frame5" src="https://github.com/user-attachments/assets/76c808fa-84f8-4fe4-9cad-c2402bcac93d" />  
+ViT_predictions:
+<img width="853" height="568" alt="VIT_frame5" src="https://github.com/user-attachments/assets/8d76fb24-4b96-471f-8ce9-731b6cc33801" />
 
 ---
 ## Repository
