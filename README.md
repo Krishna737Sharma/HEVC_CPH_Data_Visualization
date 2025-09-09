@@ -82,7 +82,7 @@ Running inference on a full frame and comparing the complete predicted partition
 
 HEVC_predictions:
 
-<img width="835" height="556" alt="no_modelframe7" src="https://github.com/user-attachments/assets/0db719a9-b632-4289-aca9-f88879e4898c" />
+<img width="812" height="546" alt="Screenshot 2025-09-09 121428" src="https://github.com/user-attachments/assets/29959d69-10a2-4272-bf80-859a51582670" />
 
 
 CNN_predictions:
